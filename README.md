@@ -4,10 +4,9 @@
 
 Node version should be at least 18.0.0.
 
-```"engines": {
-    "node": ">=18"
-}
-```
+This rule exist into package.json file.
+
+`"node": ">=18"`
 
 ## Instructions
 

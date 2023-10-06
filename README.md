@@ -15,7 +15,7 @@ After the project repository fetched on the local machine, user needs ensure nod
 Important thing as well, create this folder in the root of `adriatic-hr` project and avoid issues.
 Create `.vscode` folder, in it create new folder `settings.json`, it should look like this below.
 
-```
+```bash
 {
     "files.associations": {
         "*.css": "tailwindcss"

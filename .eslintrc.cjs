@@ -22,5 +22,8 @@ module.exports = {
     plugins: ['react', '@typescript-eslint'],
     rules: {
         'react/react-in-jsx-scope': 0,
+        'comma-dangle': 'off',
+        '@typescript-eslint/comma-dangle': 'error',
     },
+    ignorePatterns: ['.eslintrc.cjs', 'vite.config.ts', 'src'],
 };

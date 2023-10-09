@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Layout from './containers/Layout';
 import HomeScreen from './screens/HomeScreen';
@@ -8,7 +8,8 @@ function App() {
     return (
         <>
             <Routes>
-                <Route path="/" element={<Layout />}>
+                <Route path="/" element={<Navigate to="/accomodations" />} />
+                <Route path="/accomodations" element={<Layout />}>
                     <Route index element={<HomeScreen />} />
                 </Route>
                 <Route path="*" element={<NotFoundScreen />} />

@@ -1,0 +1,15 @@
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('./assets/fonts/Ubuntu-Regular.ttf') format('true-type');
+    font-style: normal;
+}
+
+:root {
+    --font-base: 'Ubuntu';
+    --blue-color: #226bf3;
+    --grey-color: #cccccc;
+}
+
+body {
+    font-family: var(--font-base);
+}

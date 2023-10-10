@@ -20,8 +20,6 @@ const HomeScreen = () => {
     const navigate = useNavigate();
     const { accommodations, isLoadingAccomodations } = useAccomodation();
 
-    console.log('Search date', searchParams.get('startDate'));
-
     const { fields, onChange, onReset } = useForm({
         startDate: !!searchParams.get('startDate')
             ? searchParams.get('startDate')

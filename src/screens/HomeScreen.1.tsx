@@ -37,7 +37,6 @@ export const HomeScreen = () => {
             }),
         };
 
-        console.log('formData', formData);
         setSearchParams(formData);
     };
 

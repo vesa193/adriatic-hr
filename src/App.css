@@ -13,3 +13,7 @@
 body {
     font-family: var(--font-base);
 }
+
+button[type='submit'] {
+    background-color: #226bf3;
+}

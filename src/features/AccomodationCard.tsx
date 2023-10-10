@@ -12,7 +12,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { memo, useState } from 'react';
 import photo1 from '../assets/images/photo1.jpeg';
-import { formatCurrency } from '../util/formatCurrency';
+import { formatCurrency } from '../utils/formatCurrency';
 
 type Amenity = {
     airConditioning: boolean;
@@ -167,7 +167,6 @@ const AccomodationCard = ({
                             </div>
                             <div>
                                 <p>
-                                    Price:{' '}
                                     {minPrice === maxPrice
                                         ? formatCurrency(minPrice)
                                         : `${formatCurrency(

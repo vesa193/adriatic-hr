@@ -20,7 +20,6 @@ const getAccomodations = async () => {
             throw new Error('Something went wrong in request');
         }
 
-        console.log('response', response.data);
         return response.data;
     } catch (error: any) {
         console.log('Err: ', error);

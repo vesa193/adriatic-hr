@@ -1,4 +1,4 @@
-import { ChangeEvent, EventHandler, FormEvent } from 'react';
+import { FormEvent } from 'react';
 import DatePicker from '../components/advanced-inputs/DatePicker';
 import InputField from '../components/text-inputs/InputField';
 import AccomodationCard, { IAccomodation } from '../features/AccomodationCard';
@@ -7,51 +7,37 @@ import { useForm } from './hooks/useForm';
 import BaseButton from '../components/buttons/BaseButton';
 import { useSearchParams } from 'react-router-dom';
 
-type IFormData = {
-    startDate: string;
-    endDate: string;
-    capacity: string;
-    maxPricePerNight: string;
-};
-
-const intialValues = {
-    startDate: '',
-    endDate: '',
-    capacity: '',
-    maxPricePerNight: '',
-};
-
-const HomeScreen = () => {
+export const HomeScreen = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { accommodations, isLoadingAccomodations } = useAccomodation();
-    const { fields, onChange } = useForm(intialValues);
+    const { fields, onChange } = useForm({
+        startDate: '',
+        endDate: '',
+        capacity: '',
+        maxPricePerNight: '',
+    });
 
     const isRegularScheduleDate =
         new Date(fields?.startDate) < new Date(fields?.endDate);
-
-    const isButtonDisabled = !fields?.startDate || !fields?.endDate;
-    console.log(
-        'INF1',
-        fields?.startDate,
-        searchParams.get('startDate'),
-        fields?.endDate,
-        searchParams.get('endDate')
-    );
 
     if (isLoadingAccomodations) {
         return <p>Loading...</p>;
     }
 
+    const isButtonDisabled = !fields?.startDate || !fields?.endDate;
+
     const handleOnSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
         const formData = {
-            startDate: fields?.startDate || '',
-            endDate: fields?.endDate || '',
-            capacity: fields?.capacity || '',
-            maxPricePerNight: fields?.maxPricePerNight || '',
+            startDate: fields?.startDate ? fields?.startData : '',
+            endDate: fields?.endDate ? fields?.endDate : '',
+            ...(fields?.capacity && { capacity: fields.capacity }),
+            ...(fields?.maxPricePerNight && {
+                maxPricePerNight: fields.maxPricePerNight,
+            }),
         };
 
+        console.log('formData', formData);
         setSearchParams(formData);
     };
 
@@ -60,17 +46,11 @@ const HomeScreen = () => {
             <section className="sticky top-0 z-10 bg-white p-4 mb-10">
                 <form
                     className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4"
-                    onSubmit={(e: FormEvent<HTMLFormElement>) =>
-                        handleOnSubmit(e)
-                    }
+                    onSubmit={handleOnSubmit}
                 >
                     <DatePicker
                         name="startDate"
-                        value={
-                            searchParams.get('startDate') ||
-                            fields?.startDate ||
-                            ''
-                        }
+                        value={fields?.startDate || ''}
                         label="Start date"
                         onChange={onChange}
                         min="2024-01-01"
@@ -78,9 +58,7 @@ const HomeScreen = () => {
                     />
                     <DatePicker
                         name="endDate"
-                        value={
-                            searchParams.get('endDate') || fields?.endDate || ''
-                        }
+                        value={fields?.endDate || ''}
                         label="End date"
                         onChange={onChange}
                         min="2024-01-01"
@@ -95,22 +73,14 @@ const HomeScreen = () => {
                         type="number"
                         label="Capacity"
                         name="capacity"
-                        value={
-                            searchParams.get('capacity') ||
-                            fields?.capacity ||
-                            ''
-                        }
+                        value={fields?.capacity || ''}
                         onChange={onChange}
                     />
                     <InputField
                         type="number"
                         label="Max price per night"
                         name="maxPricePerNight"
-                        value={
-                            searchParams.get('maxPricePerNight') ||
-                            fields?.maxPricePerNight ||
-                            ''
-                        }
+                        value={fields?.maxPricePerNight || ''}
                         onChange={onChange}
                     />
                     <BaseButton
@@ -136,5 +106,3 @@ const HomeScreen = () => {
         </>
     );
 };
-
-export default HomeScreen;

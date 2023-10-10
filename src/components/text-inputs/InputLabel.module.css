@@ -1,0 +1,18 @@
+.inputLabel {
+    position: absolute;
+    top: 1px;
+    color: #ccc;
+    transition: all 0.1s ease-out;
+    font-size: 0.8rem;
+    color: #a0a0a0;
+    left: 1.8rem;
+
+    &:focus {
+        left: 1.8rem;
+    }
+
+    &.withNoInputValue {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}

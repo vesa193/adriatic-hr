@@ -66,6 +66,33 @@ const HomeScreen = () => {
     //     navigate({ search }, { state: reservateDate });
     // };
 
+    // const filterAccomodations = accommodations?.filter(
+    //     (accomodation: IAccomodation) => {
+    //         return accomodation.capacity === +searchParams.get('capacity')!
+    //             ? true
+    //             : false;
+    //     }
+    // );
+
+    const filterPriceListInEuros = accommodations.map(
+        (element: IAccomodation) => {
+            return {
+                ...element,
+                pricelistInEuros: element.pricelistInEuros.filter(
+                    (priceitemInEuros) =>
+                        priceitemInEuros.pricePerNight ===
+                        +searchParams.get('maxPricePerNight')!
+                ),
+            };
+        }
+    );
+
+    const elements = filterPriceListInEuros?.filter(
+        (item: IAccomodation) => !!item.pricelistInEuros.length
+    );
+
+    console.log('elements', elements);
+
     return (
         <>
             <FilterAccomodation
@@ -75,15 +102,24 @@ const HomeScreen = () => {
                 onChange={onChange}
             />
             <main className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-4 p-4 place-items-center items-stretch">
-                {!!accommodations?.length &&
-                    accommodations?.map((accomodation: IAccomodation) => {
-                        return (
-                            <AccomodationCard
-                                key={accomodation?.id}
-                                {...accomodation}
-                            />
-                        );
-                    })}
+                {!!elements?.length
+                    ? elements?.map((accomodation: IAccomodation) => {
+                          return (
+                              <AccomodationCard
+                                  key={accomodation?.id}
+                                  {...accomodation}
+                              />
+                          );
+                      })
+                    : !!accommodations?.length &&
+                      accommodations?.map((accomodation: IAccomodation) => {
+                          return (
+                              <AccomodationCard
+                                  key={accomodation?.id}
+                                  {...accomodation}
+                              />
+                          );
+                      })}
             </main>
         </>
     );

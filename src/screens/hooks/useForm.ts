@@ -1,16 +1,24 @@
 import { ChangeEvent, useCallback, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 const useForm = (initialState: any) => {
     const [fields, setFields] = useState(initialState);
     const [errors, setErrors] = useState(initialState);
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const handleChange = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
             setErrors(initialState);
+            console.log('12234567', fields, 'sss', e.target.value);
             setFields({
                 ...fields,
                 [e.target.name]: e.target.value,
             });
+
+            if (!e.target.value) {
+                searchParams.delete(e.target.name);
+                setSearchParams(searchParams);
+            }
         },
         [fields]
     );

@@ -30,6 +30,7 @@ const FilterAccomodation = ({
 
     return (
         <section className="sticky top-0 z-10 bg-white p-4 mb-10">
+            <h4 className="font-bold mb-4">Filter</h4>
             <form
                 className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4"
                 onSubmit={handleSearchFilter}
@@ -39,7 +40,7 @@ const FilterAccomodation = ({
                     value={
                         fields?.startDate || searchParams.get('startDate') || ''
                     }
-                    label="Start date"
+                    label="Pocetni datum"
                     onChange={onChange}
                     min="2024-01-01"
                     max="2024-12-31"
@@ -47,7 +48,7 @@ const FilterAccomodation = ({
                 <DatePicker
                     name="endDate"
                     value={fields?.endDate || searchParams.get('endDate') || ''}
-                    label="End date"
+                    label="Krajnji datum"
                     onChange={onChange}
                     min="2024-01-01"
                     max="2024-12-31"
@@ -59,7 +60,7 @@ const FilterAccomodation = ({
                 />
                 <InputField
                     type="number"
-                    label="Capacity"
+                    label="Br. osoba"
                     name="capacity"
                     value={
                         fields?.capacity || searchParams.get('capacity') || ''
@@ -68,7 +69,7 @@ const FilterAccomodation = ({
                 />
                 <InputField
                     type="number"
-                    label="Max price per night"
+                    label="Maksimalna cena po nocenju"
                     name="maxPricePerNight"
                     value={
                         fields?.maxPricePerNight ||
@@ -83,7 +84,7 @@ const FilterAccomodation = ({
                         variant="contained"
                         isDisabled={!isRegularScheduleDate || !isButtonDisabled}
                     >
-                        Search
+                        Pretrazi
                     </BaseButton>
                     <BaseButton
                         type="reset"
@@ -91,7 +92,7 @@ const FilterAccomodation = ({
                         isDisabled={!isRegularScheduleDate}
                         onClick={handleResetFilter}
                     >
-                        Clear
+                        Ocisti
                     </BaseButton>
                 </div>
             </form>

@@ -141,10 +141,7 @@ const AccomodationCard = ({
                     <>
                         {capacity ? (
                             <p className="text-gray-700 text-base">
-                                <span className="mr-1">
-                                    Max {capacity > 1 ? 'Persons' : 'Persons'}{' '}
-                                    {capacity}
-                                </span>
+                                <span className="mr-1">{capacity}</span>
                                 <FontAwesomeIcon icon={faPeopleGroup} />
                             </p>
                         ) : null}
@@ -152,7 +149,7 @@ const AccomodationCard = ({
                             <>
                                 <div className="text-gray-700 text-base">
                                     <span className="mr-1">
-                                        Beach distance {beachDistanceInMeters}m
+                                        {beachDistanceInMeters}m
                                     </span>
                                     <FontAwesomeIcon icon={faUmbrellaBeach} />
                                 </div>
@@ -277,7 +274,7 @@ const AccomodationCard = ({
                             className="text-base mt-10 text-blue-400 cursor-pointer inline-block"
                             onClick={() => setIsMoreOpen(!isMoreOpen)}
                         >
-                            {!isMoreOpen ? 'more...' : 'less'}
+                            {!isMoreOpen ? 'vise...' : 'manje'}
                         </p>
                     </>
                 </div>

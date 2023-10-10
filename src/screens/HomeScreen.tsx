@@ -14,29 +14,27 @@ type IFormData = {
     maxPricePerNight: string;
 };
 
-const intialValues = {
-    startDate: '',
-    endDate: '',
-    capacity: '',
-    maxPricePerNight: '',
-};
-
 const HomeScreen = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { accommodations, isLoadingAccomodations } = useAccomodation();
-    const { fields, onChange } = useForm(intialValues);
+    const { fields, onChange } = useForm({
+        startDate: searchParams.get('startDate') || '',
+        endDate: searchParams.get('endDate') || '',
+        capacity: searchParams.get('capacity') || '',
+        maxPricePerNight: searchParams.get('maxPricePerNight') || '',
+    });
+
+    console.log(searchParams.toString());
 
     const isRegularScheduleDate =
         new Date(fields?.startDate) < new Date(fields?.endDate);
 
-    const isButtonDisabled = !fields?.startDate || !fields?.endDate;
-    console.log(
-        'INF1',
-        fields?.startDate,
-        searchParams.get('startDate'),
-        fields?.endDate,
-        searchParams.get('endDate')
-    );
+    const isButtonDisabled =
+        !fields?.startDate ||
+        !fields?.endDate ||
+        !searchParams.get('startDate') ||
+        !searchParams.get('endDate');
+    console.log(isButtonDisabled, isRegularScheduleDate);
 
     if (isLoadingAccomodations) {
         return <p>Loading...</p>;

@@ -28,8 +28,11 @@ const DatePicker = ({
             datePickerRef?.current?.setAttribute('data-date', value);
         }
 
-        if (datePickerRef?.current && !!value) {
-            datePickerRef?.current?.setAttribute('data-date', value);
+        if (datePickerRef?.current && value !== '') {
+            datePickerRef?.current?.setAttribute(
+                'data-date',
+                formatDate(value)
+            );
         }
     }, [value]);
 

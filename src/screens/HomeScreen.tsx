@@ -16,6 +16,8 @@ const HomeScreen = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { accommodations, isLoadingAccomodations } = useAccomodation();
 
+    console.log('accommodations', accommodations);
+
     const { fields, onChange, onReset } = useForm({
         startDate: !!searchParams.get('startDate')
             ? searchParams.get('startDate')
@@ -35,7 +37,7 @@ const HomeScreen = () => {
         return <p>Loading...</p>;
     }
 
-    const handleOnSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSearchFilter = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const formData = {
@@ -63,7 +65,7 @@ const HomeScreen = () => {
         <>
             <FilterAccomodation
                 fields={fields}
-                handleOnSubmit={handleOnSubmit}
+                handleSearchFilter={handleSearchFilter}
                 handleResetFilter={handleResetFilter}
                 onChange={onChange}
             />

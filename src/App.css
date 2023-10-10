@@ -15,6 +15,7 @@ body {
 }
 
 button[type='submit'],
-button[type='reset'] {
+button[type='reset'],
+button[type='button'] {
     background-color: #226bf3;
 }

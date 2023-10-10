@@ -13,6 +13,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { memo, useState } from 'react';
 import photo1 from '../assets/images/photo1.jpeg';
 import { formatCurrency } from '../utils/formatCurrency';
+import { useSearchParams } from 'react-router-dom';
+import { calculatePricePerNight } from '../utils/calculatePricePerNight';
+import BaseButton from '../components/buttons/BaseButton';
 
 type Amenity = {
     airConditioning: boolean;
@@ -64,6 +67,9 @@ const AccomodationCard = ({
     amenities,
     pricelistInEuros,
 }: AccomodationCardProps) => {
+    const [searchParams] = useSearchParams();
+    const startDate = new Date(searchParams.get('startDate')!);
+    const endDate = new Date(searchParams.get('endDate')!);
     const [isMoreOpen, setIsMoreOpen] = useState<boolean>(false);
     const minPrice = Math.min(
         ...pricelistInEuros?.map(
@@ -75,6 +81,16 @@ const AccomodationCard = ({
             (pricelistInEuro: PricelistInEuros) => pricelistInEuro.pricePerNight
         )
     );
+
+    const example = pricelistInEuros.filter((item: PricelistInEuros) => {
+        const intervalStart = new Date(item.intervalStart);
+        const intervalEnd = new Date(item.intervalEnd);
+        const condition = intervalStart <= startDate && intervalEnd >= endDate;
+        return condition;
+    });
+
+    console.log('Example', example);
+
     return (
         <div className="max-w-sm w-full lg:max-w-full lg:flex">
             <div
@@ -165,24 +181,49 @@ const AccomodationCard = ({
                                     }
                                 />
                             </div>
-                            <div>
-                                <p>
-                                    {minPrice === maxPrice
-                                        ? formatCurrency(minPrice)
-                                        : `${formatCurrency(
-                                              minPrice
-                                          )} - ${formatCurrency(maxPrice)}`}
-                                </p>
-                            </div>
-                            <div className="text-gray-400 text-sm flex mt-4">
-                                <div className="w-[24px] h-[24px] rounded-[50%] border-slate-400 mr-1">
-                                    <FontAwesomeIcon icon={faInfo} />
+                            {example?.length === 0 ? (
+                                <div>
+                                    <p>
+                                        {minPrice === maxPrice
+                                            ? formatCurrency(minPrice)
+                                            : `${formatCurrency(
+                                                  minPrice
+                                              )} - ${formatCurrency(maxPrice)}`}
+                                    </p>
                                 </div>
-                                <i>
-                                    Korisnik treba odabrati datume boravka da bi
-                                    mogao vidjeti točnu cijenu i rezervirati
-                                    smještaj{' '}
-                                </i>
+                            ) : null}
+                            <div className="text-sm mt-4">
+                                {example?.length === 0 ? (
+                                    <div className="text-gray-400">
+                                        <div className="w-[24px] h-[24px] rounded-[50%] border-slate-400 mr-1">
+                                            <FontAwesomeIcon icon={faInfo} />
+                                        </div>
+                                        <i>
+                                            Korisnik treba odabrati datume
+                                            boravka da bi mogao vidjeti točnu
+                                            cijenu i rezervirati smještaj{' '}
+                                        </i>
+                                    </div>
+                                ) : (
+                                    example.map((item) => {
+                                        return (
+                                            <div className="grid gap-4">
+                                                <strong className="text-emerald-400">
+                                                    {formatCurrency(
+                                                        calculatePricePerNight(
+                                                            item.pricePerNight,
+                                                            startDate,
+                                                            endDate
+                                                        )
+                                                    )}
+                                                </strong>
+                                                <BaseButton variant="contained">
+                                                    Rezerviraj
+                                                </BaseButton>
+                                            </div>
+                                        );
+                                    })
+                                )}
                             </div>
                         </div>
                         <p

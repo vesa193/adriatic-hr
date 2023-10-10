@@ -7,14 +7,14 @@ import BaseButton from '../components/buttons/BaseButton';
 
 type FilterAccomodationProps = {
     fields: IFormData;
-    handleOnSubmit: (e: FormEvent<HTMLFormElement>) => void;
+    handleSearchFilter: (e: FormEvent<HTMLFormElement>) => void;
     handleResetFilter: () => void;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
 const FilterAccomodation = ({
     fields,
-    handleOnSubmit,
+    handleSearchFilter,
     handleResetFilter,
     onChange,
 }: FilterAccomodationProps) => {
@@ -32,7 +32,7 @@ const FilterAccomodation = ({
         <section className="sticky top-0 z-10 bg-white p-4 mb-10">
             <form
                 className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4"
-                onSubmit={handleOnSubmit}
+                onSubmit={handleSearchFilter}
             >
                 <DatePicker
                     name="startDate"

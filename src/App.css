@@ -14,6 +14,7 @@ body {
     font-family: var(--font-base);
 }
 
-button[type='submit'] {
+button[type='submit'],
+button[type='reset'] {
     background-color: #226bf3;
 }

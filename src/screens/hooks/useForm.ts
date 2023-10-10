@@ -16,8 +16,11 @@ const useForm = (initialState: any) => {
     );
 
     const handleReset = () => {
-        setFields(initialState);
-        setErrors(initialState);
+        const emptyInitialValues = Object.keys((key: string) => ({
+            [key]: '',
+        }));
+        setFields(emptyInitialValues);
+        setErrors(emptyInitialValues);
     };
 
     return {

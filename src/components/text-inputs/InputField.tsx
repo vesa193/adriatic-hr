@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactNode, Ref, forwardRef } from 'react';
+import { ChangeEvent, ReactNode, Ref, forwardRef, memo } from 'react';
 import style from './InputField.module.css';
 import InputLabel from './InputLabel';
 
@@ -65,4 +65,4 @@ const InputField = forwardRef(
 );
 
 InputField.displayName = 'InputField';
-export default InputField;
+export default memo(InputField);

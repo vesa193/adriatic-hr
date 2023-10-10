@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useRef } from 'react';
 import InputField from '../text-inputs/InputField';
 import { formatDate } from '../../utils/formatDate';
+import { useLocation } from 'react-router-dom';
 
 type DatePickerProps = {
     name: string;
@@ -25,9 +26,12 @@ const DatePicker = ({
 
     useEffect(() => {
         if (datePickerRef?.current && value === '') {
-            datePickerRef?.current?.setAttribute('data-date', value);
+            datePickerRef?.current?.setAttribute('data-date', '');
+            datePickerRef?.current?.setAttribute('value', '');
         }
+    }, [value]);
 
+    useEffect(() => {
         if (datePickerRef?.current && value !== '') {
             datePickerRef?.current?.setAttribute(
                 'data-date',

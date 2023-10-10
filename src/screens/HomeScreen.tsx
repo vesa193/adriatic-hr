@@ -5,7 +5,7 @@ import AccomodationCard, { IAccomodation } from '../features/AccomodationCard';
 import useAccomodation from './hooks/useAccomodations';
 import { useForm } from './hooks/useForm';
 import BaseButton from '../components/buttons/BaseButton';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 type IFormData = {
     startDate: string;
@@ -16,25 +16,35 @@ type IFormData = {
 
 const HomeScreen = () => {
     const [searchParams, setSearchParams] = useSearchParams();
+    const { search } = useLocation();
+    const navigate = useNavigate();
     const { accommodations, isLoadingAccomodations } = useAccomodation();
-    const { fields, onChange } = useForm({
-        startDate: searchParams.get('startDate') || '',
-        endDate: searchParams.get('endDate') || '',
-        capacity: searchParams.get('capacity') || '',
-        maxPricePerNight: searchParams.get('maxPricePerNight') || '',
-    });
 
-    console.log(searchParams.toString());
+    console.log('Search date', searchParams.get('startDate'));
+
+    const { fields, onChange, onReset } = useForm({
+        startDate: !!searchParams.get('startDate')
+            ? searchParams.get('startDate')
+            : '',
+        endDate: !!searchParams.get('endDate')
+            ? searchParams.get('endDate')
+            : '',
+        capacity: !!searchParams.get('capacity')
+            ? searchParams.get('capacity')
+            : '',
+        maxPricePerNight: searchParams.get('maxPricePerNight')
+            ? searchParams.get('maxPricePerNight')
+            : '',
+    });
 
     const isRegularScheduleDate =
         new Date(fields?.startDate) < new Date(fields?.endDate);
 
     const isButtonDisabled =
-        !fields?.startDate ||
-        !fields?.endDate ||
-        !searchParams.get('startDate') ||
-        !searchParams.get('endDate');
-    console.log(isButtonDisabled, isRegularScheduleDate);
+        searchParams.get('startDate') ||
+        fields?.startDate ||
+        searchParams.get('endDate') ||
+        fields?.endDate;
 
     if (isLoadingAccomodations) {
         return <p>Loading...</p>;
@@ -46,11 +56,22 @@ const HomeScreen = () => {
         const formData = {
             startDate: fields?.startDate || '',
             endDate: fields?.endDate || '',
-            capacity: fields?.capacity || '',
-            maxPricePerNight: fields?.maxPricePerNight || '',
+            ...(fields?.capacity && { capacity: fields.capacity }),
+            ...(fields?.maxPricePerNight && {
+                maxPricePerNight: fields.maxPricePerNight,
+            }),
         };
 
         setSearchParams(formData);
+    };
+
+    const handleResetFilter = () => {
+        searchParams.delete('startDate');
+        searchParams.delete('endDate');
+        searchParams.delete('capacity');
+        searchParams.delete('maxPricePerNight');
+        setSearchParams(searchParams);
+        onReset();
     };
 
     return (
@@ -111,13 +132,25 @@ const HomeScreen = () => {
                         }
                         onChange={onChange}
                     />
-                    <BaseButton
-                        type="submit"
-                        variant="contained"
-                        isDisabled={!isRegularScheduleDate || isButtonDisabled}
-                    >
-                        Search
-                    </BaseButton>
+                    <div className="grid grid-cols-[repeat(2,50%)] gap-2">
+                        <BaseButton
+                            type="submit"
+                            variant="contained"
+                            isDisabled={
+                                !isRegularScheduleDate || !isButtonDisabled
+                            }
+                        >
+                            Search
+                        </BaseButton>
+                        <BaseButton
+                            type="reset"
+                            variant="contained"
+                            isDisabled={!isRegularScheduleDate}
+                            onClick={handleResetFilter}
+                        >
+                            Clear
+                        </BaseButton>
+                    </div>
                 </form>
             </section>
             <main className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-4 p-4 place-items-center items-stretch">

@@ -37,7 +37,7 @@ const FilterAccomodation = ({
                 <DatePicker
                     name="startDate"
                     value={
-                        searchParams.get('startDate') || fields?.startDate || ''
+                        fields?.startDate || searchParams.get('startDate') || ''
                     }
                     label="Start date"
                     onChange={onChange}
@@ -46,7 +46,7 @@ const FilterAccomodation = ({
                 />
                 <DatePicker
                     name="endDate"
-                    value={searchParams.get('endDate') || fields?.endDate || ''}
+                    value={fields?.endDate || searchParams.get('endDate') || ''}
                     label="End date"
                     onChange={onChange}
                     min="2024-01-01"
@@ -62,7 +62,7 @@ const FilterAccomodation = ({
                     label="Capacity"
                     name="capacity"
                     value={
-                        searchParams.get('capacity') || fields?.capacity || ''
+                        fields?.capacity || searchParams.get('capacity') || ''
                     }
                     onChange={onChange}
                 />
@@ -71,8 +71,8 @@ const FilterAccomodation = ({
                     label="Max price per night"
                     name="maxPricePerNight"
                     value={
-                        searchParams.get('maxPricePerNight') ||
                         fields?.maxPricePerNight ||
+                        searchParams.get('maxPricePerNight') ||
                         ''
                     }
                     onChange={onChange}

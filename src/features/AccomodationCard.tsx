@@ -11,11 +11,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { memo, useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import photo1 from '../assets/images/photo1.jpeg';
-import { formatCurrency } from '../utils/formatCurrency';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { calculatePricePerNight } from '../utils/calculatePricePerNight';
 import BaseButton from '../components/buttons/BaseButton';
+import { calculatePricePerNight } from '../utils/calculatePricePerNight';
+import { formatCurrency } from '../utils/formatCurrency';
 
 export type IReservateDate = {
     totalPrice: string;
@@ -74,10 +74,8 @@ const AccomodationCard = ({
     beachDistanceInMeters,
     amenities,
     pricelistInEuros,
-    handleReservation,
 }: AccomodationCardProps) => {
     const navigate = useNavigate();
-    const { search } = useLocation();
     const [searchParams] = useSearchParams();
     const startDate = new Date(searchParams.get('startDate')!);
     const endDate = new Date(searchParams.get('endDate')!);

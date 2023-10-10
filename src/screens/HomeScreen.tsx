@@ -1,6 +1,9 @@
 import { FormEvent } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import AccomodationCard, { IAccomodation } from '../features/AccomodationCard';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import AccomodationCard, {
+    IAccomodation,
+    IReservateDate,
+} from '../features/AccomodationCard';
 import FilterAccomodation from '../features/FilterAccomodation';
 import useAccomodation from './hooks/useAccomodations';
 import { useForm } from './hooks/useForm';
@@ -14,6 +17,8 @@ export type IFormData = {
 
 const HomeScreen = () => {
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const { search } = useLocation();
     const { accommodations, isLoadingAccomodations } = useAccomodation();
 
     console.log('accommodations', accommodations);
@@ -60,6 +65,11 @@ const HomeScreen = () => {
         setSearchParams(searchParams);
         onReset();
     };
+
+    // const handleReservation = (reservateDate: IReservateDate) => {
+    //     console.log('reservateDate', reservateDate);
+    //     navigate({ search }, { state: reservateDate });
+    // };
 
     return (
         <>

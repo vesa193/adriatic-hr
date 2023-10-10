@@ -10,12 +10,19 @@ import {
     faWifi,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { memo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import photo1 from '../assets/images/photo1.jpeg';
 import { formatCurrency } from '../utils/formatCurrency';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { calculatePricePerNight } from '../utils/calculatePricePerNight';
 import BaseButton from '../components/buttons/BaseButton';
+
+export type IReservateDate = {
+    totalPrice: string;
+    startDate: Date;
+    endDate: Date;
+    capacity: number;
+};
 
 type Amenity = {
     airConditioning: boolean;
@@ -46,6 +53,7 @@ export type IAccomodation = {
     id: number;
     image: string;
     title: string;
+    handleReservation: (reservateData: IReservateDate) => void;
 };
 
 type AccomodationCardProps = IAccomodation;
@@ -66,7 +74,10 @@ const AccomodationCard = ({
     beachDistanceInMeters,
     amenities,
     pricelistInEuros,
+    handleReservation,
 }: AccomodationCardProps) => {
+    const navigate = useNavigate();
+    const { search } = useLocation();
     const [searchParams] = useSearchParams();
     const startDate = new Date(searchParams.get('startDate')!);
     const endDate = new Date(searchParams.get('endDate')!);
@@ -82,14 +93,37 @@ const AccomodationCard = ({
         )
     );
 
-    const example = pricelistInEuros.filter((item: PricelistInEuros) => {
-        const intervalStart = new Date(item.intervalStart);
-        const intervalEnd = new Date(item.intervalEnd);
-        const condition = intervalStart <= startDate && intervalEnd >= endDate;
-        return condition;
-    });
+    const diplayPricePerIntervalDate = useMemo(
+        () =>
+            pricelistInEuros.filter((item: PricelistInEuros) => {
+                const intervalStart = new Date(item.intervalStart);
+                const intervalEnd = new Date(item.intervalEnd);
+                const condition =
+                    intervalStart <= startDate && intervalEnd >= endDate;
+                return condition;
+            }),
+        [startDate, endDate]
+    );
 
-    console.log('Example', example);
+    console.log('Example', diplayPricePerIntervalDate);
+
+    const handleReservate = (
+        pricePerNight: number,
+        startDate: Date,
+        endDate: Date
+    ) => {
+        const reservationData = {
+            startDate,
+            endDate,
+            capacity,
+            totalPrice: formatCurrency(
+                calculatePricePerNight(pricePerNight, startDate, endDate)
+            ),
+        };
+        navigate('/accomodations/reservation-details', {
+            state: reservationData,
+        });
+    };
 
     return (
         <div className="max-w-sm w-full lg:max-w-full lg:flex">
@@ -181,7 +215,7 @@ const AccomodationCard = ({
                                     }
                                 />
                             </div>
-                            {example?.length === 0 ? (
+                            {diplayPricePerIntervalDate?.length === 0 ? (
                                 <div>
                                     <p>
                                         {minPrice === maxPrice
@@ -193,7 +227,7 @@ const AccomodationCard = ({
                                 </div>
                             ) : null}
                             <div className="text-sm mt-4">
-                                {example?.length === 0 ? (
+                                {diplayPricePerIntervalDate?.length === 0 ? (
                                     <div className="text-gray-400">
                                         <div className="w-[24px] h-[24px] rounded-[50%] border-slate-400 mr-1">
                                             <FontAwesomeIcon icon={faInfo} />
@@ -205,24 +239,38 @@ const AccomodationCard = ({
                                         </i>
                                     </div>
                                 ) : (
-                                    example.map((item) => {
-                                        return (
-                                            <div className="grid gap-4">
-                                                <strong className="text-emerald-400">
-                                                    {formatCurrency(
-                                                        calculatePricePerNight(
-                                                            item.pricePerNight,
-                                                            startDate,
-                                                            endDate
-                                                        )
-                                                    )}
-                                                </strong>
-                                                <BaseButton variant="contained">
-                                                    Rezerviraj
-                                                </BaseButton>
-                                            </div>
-                                        );
-                                    })
+                                    diplayPricePerIntervalDate.map(
+                                        (item, index) => {
+                                            return (
+                                                <div
+                                                    key={index}
+                                                    className="grid gap-4"
+                                                >
+                                                    <strong className="text-emerald-400">
+                                                        {formatCurrency(
+                                                            calculatePricePerNight(
+                                                                item.pricePerNight,
+                                                                startDate,
+                                                                endDate
+                                                            )
+                                                        )}
+                                                    </strong>
+                                                    <BaseButton
+                                                        variant="contained"
+                                                        onClick={() =>
+                                                            handleReservate(
+                                                                item.pricePerNight,
+                                                                startDate,
+                                                                endDate
+                                                            )
+                                                        }
+                                                    >
+                                                        Rezerviraj
+                                                    </BaseButton>
+                                                </div>
+                                            );
+                                        }
+                                    )
                                 )}
                             </div>
                         </div>

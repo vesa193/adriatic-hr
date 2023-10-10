@@ -1,12 +1,9 @@
-import { ChangeEvent, FormEvent } from 'react';
+import { FormEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import DatePicker from '../components/advanced-inputs/DatePicker';
-import BaseButton from '../components/buttons/BaseButton';
-import InputField from '../components/text-inputs/InputField';
 import AccomodationCard, { IAccomodation } from '../features/AccomodationCard';
+import FilterAccomodation from '../features/FilterAccomodation';
 import useAccomodation from './hooks/useAccomodations';
 import { useForm } from './hooks/useForm';
-import FilterAccomodation from '../features/FilterAccomodation';
 
 export type IFormData = {
     startDate: string;
@@ -33,15 +30,6 @@ const HomeScreen = () => {
             ? searchParams.get('maxPricePerNight')
             : '',
     });
-
-    const isRegularScheduleDate =
-        new Date(fields?.startDate) < new Date(fields?.endDate);
-
-    const isButtonDisabled =
-        searchParams.get('startDate') ||
-        fields?.startDate ||
-        searchParams.get('endDate') ||
-        fields?.endDate;
 
     if (isLoadingAccomodations) {
         return <p>Loading...</p>;

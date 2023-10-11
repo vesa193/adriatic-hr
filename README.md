@@ -41,7 +41,7 @@ If request is forbiden and in console user has error 403 (Forbidden), should do 
 Should go to Network tab in DevTools, then double click on given request, it will open new tab in user's browser and click on button `Request temporary access to the demo server`, it should able request usage.
 
 1. Should double click here at first
-   ![Screenshot]('./../src/assets/screenshots/adriatic-screenshot-01.png')
+   ![Screenshot](./../src/assets/screenshots/adriatic-screenshot-01.png)
 
 2. As second step, user shold click and able request sending and receiving data to client
-   ![Screenshot]('./../src/assets/screenshots/adriatic-screenshot.png')
+   ![Screenshot](./../src/assets/screenshots/adriatic-screenshot.png)

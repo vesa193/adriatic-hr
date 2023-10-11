@@ -10,13 +10,12 @@ import {
     faWifi,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { memo, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import photo1 from '../assets/images/photo1.jpeg';
 import BaseButton from '../components/buttons/BaseButton';
 import { calculatePricePerNight } from '../utils/calculatePricePerNight';
 import { formatCurrency } from '../utils/formatCurrency';
-import { compareTwoDates } from '../utils/formatDate';
 
 export type IReservateDate = {
     totalPrice: string;
@@ -83,6 +82,11 @@ const AccomodationCard = ({
     const startDate = new Date(searchParams.get('startDate')!);
     const endDate = new Date(searchParams.get('endDate')!);
     const [isMoreOpen, setIsMoreOpen] = useState<boolean>(false);
+
+    const handleMoreIsOpen = useCallback(() => {
+        setIsMoreOpen(!isMoreOpen);
+    }, [isMoreOpen, setIsMoreOpen]);
+
     const minPrice = Math.min(
         ...pricelistInEuros?.map(
             (pricelistInEuro: PricelistInEuros) => pricelistInEuro.pricePerNight
@@ -101,12 +105,7 @@ const AccomodationCard = ({
             const intervalStart = new Date(item.intervalStart);
             const intervalEnd = new Date(item.intervalEnd);
 
-            if (
-                intervalStart <= startDate &&
-                intervalEnd >= endDate
-
-                // && item.intervalStart.includes(searchParams.get('endDate')!)
-            ) {
+            if (intervalStart <= startDate && intervalEnd >= endDate) {
                 intervalDates.push(item);
             }
         });
@@ -258,7 +257,6 @@ const AccomodationCard = ({
                                 ) : (
                                     diplayPricePerIntervalDate1.map(
                                         (item, index) => {
-                                            console.log('item', item);
                                             return (
                                                 <div
                                                     key={index}
@@ -296,7 +294,7 @@ const AccomodationCard = ({
                         <p
                             role="button"
                             className="text-base mt-10 text-blue-400 cursor-pointer inline-block"
-                            onClick={() => setIsMoreOpen(!isMoreOpen)}
+                            onClick={handleMoreIsOpen}
                         >
                             {!isMoreOpen ? 'više...' : 'manje'}
                         </p>

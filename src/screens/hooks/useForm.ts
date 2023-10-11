@@ -9,7 +9,6 @@ const useForm = (initialState: any) => {
     const handleChange = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
             setErrors(initialState);
-            console.log('12234567', fields, 'sss', e.target.value);
             setFields({
                 ...fields,
                 [e.target.name]: e.target.value,

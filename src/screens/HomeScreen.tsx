@@ -20,8 +20,6 @@ const HomeScreen = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { accomodations, isLoadingAccomodations } = useAccomodation();
 
-    console.log('accommodations', accomodations);
-
     const { fields, onChange, onReset } = useForm({
         startDate: !!searchParams.get('startDate')
             ? searchParams.get('startDate')
@@ -68,8 +66,8 @@ const HomeScreen = () => {
     const filteredAccomodations = accomodations?.filter(
         (accomodation: IAccomodation) => {
             if (
-                searchParams.get('startDate') &&
-                searchParams.get('endDate') &&
+                searchParams.get('startDate')! &&
+                searchParams.get('endDate')! &&
                 searchParams.get('capacity')! &&
                 searchParams.get('maxPricePerNight')!
             ) {
@@ -88,8 +86,8 @@ const HomeScreen = () => {
             }
 
             if (
-                searchParams.get('startDate') &&
-                searchParams.get('endDate') &&
+                searchParams.get('startDate')! &&
+                searchParams.get('endDate')! &&
                 searchParams.get('maxPricePerNight')!
             ) {
                 return (
@@ -106,8 +104,8 @@ const HomeScreen = () => {
             }
 
             if (
-                searchParams.get('startDate') &&
-                searchParams.get('endDate') &&
+                searchParams.get('startDate')! &&
+                searchParams.get('endDate')! &&
                 searchParams.get('capacity')!
             ) {
                 return (
@@ -120,7 +118,10 @@ const HomeScreen = () => {
                 );
             }
 
-            if (searchParams.get('startDate') && searchParams.get('endDate')) {
+            if (
+                searchParams.get('startDate')! &&
+                searchParams.get('endDate')!
+            ) {
                 return filterPerAvailableDates(
                     accomodation?.availableDates,
                     searchParams.get('startDate')!,

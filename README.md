@@ -33,3 +33,15 @@ As next step this command should run in the terminal:
 `npm install`
 
 After this, the link of the localhost will appear in the terminal, open it and app will running.
+
+## Usage of api - avoid CORS
+
+If request is forbiden and in console user has error 403 (Forbidden), should do next:
+
+Should go to Network tab in DevTools, then double click on given request, it will open new tab in user's browser and click on button `Request temporary access to the demo server`, it should able request usage.
+
+1. Should double click here at first
+   ![Screenshot]('./../src/assets/screenshots/adriatic-screenshot-01.png')
+
+2. As second step, user shold click and able request sending and receiving data to client
+   ![Screenshot]('./../src/assets/screenshots/adriatic-screenshot.png')

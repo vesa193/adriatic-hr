@@ -4,6 +4,7 @@ import InputField from '../components/text-inputs/InputField';
 import { IFormData } from '../screens/HomeScreen';
 import { ChangeEvent, FormEvent, memo } from 'react';
 import BaseButton from '../components/buttons/BaseButton';
+import { compareTwoDates } from '../utils/formatDate';
 
 type FilterAccomodationProps = {
     fields: IFormData;
@@ -19,8 +20,10 @@ const FilterAccomodation = ({
     onChange,
 }: FilterAccomodationProps) => {
     const [searchParams] = useSearchParams();
-    const isRegularScheduleDate =
-        new Date(fields?.startDate) < new Date(fields?.endDate);
+    const isRegularScheduleDate = compareTwoDates(
+        new Date(fields?.startDate),
+        new Date(fields?.endDate)
+    );
 
     const isButtonDisabled =
         searchParams.get('startDate') ||
@@ -40,7 +43,7 @@ const FilterAccomodation = ({
                     value={
                         fields?.startDate || searchParams.get('startDate') || ''
                     }
-                    label="Pocetni datum"
+                    label="Početni datum*"
                     onChange={onChange}
                     min="2024-01-01"
                     max="2024-12-31"
@@ -48,13 +51,13 @@ const FilterAccomodation = ({
                 <DatePicker
                     name="endDate"
                     value={fields?.endDate || searchParams.get('endDate') || ''}
-                    label="Krajnji datum"
+                    label="Krajnji datum*"
                     onChange={onChange}
                     min="2024-01-01"
                     max="2024-12-31"
                     helperText={
                         !!fields?.endDate && !isRegularScheduleDate
-                            ? 'End date should be set after start date'
+                            ? 'Krajnji datum treba biti veći ili jednak trenutnom datumu'
                             : ''
                     }
                 />
@@ -69,7 +72,7 @@ const FilterAccomodation = ({
                 />
                 <InputField
                     type="number"
-                    label="Maksimalna cena po nocenju"
+                    label="Maksimalna cena po noćenju"
                     name="maxPricePerNight"
                     value={
                         fields?.maxPricePerNight ||

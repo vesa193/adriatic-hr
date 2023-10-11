@@ -16,6 +16,7 @@ import photo1 from '../assets/images/photo1.jpeg';
 import BaseButton from '../components/buttons/BaseButton';
 import { calculatePricePerNight } from '../utils/calculatePricePerNight';
 import { formatCurrency } from '../utils/formatCurrency';
+import { compareTwoDates } from '../utils/formatDate';
 
 export type IReservateDate = {
     totalPrice: string;
@@ -33,18 +34,20 @@ type Amenity = {
     wifi: boolean;
 };
 
-type AvailableDates = {
+export type AvailableDates = {
+    find(arg0: boolean): unknown;
     intervalEnd: string;
     intervalStart: string;
 };
 
-type PricelistInEuros = {
+export type PricelistInEuros = {
     intervalEnd: string;
     intervalStart: string;
     pricePerNight: number;
 };
 
 export type IAccomodation = {
+    intervalEnd: string | number | Date;
     amenities: Amenity;
     availableDates: AvailableDates[];
     pricelistInEuros: PricelistInEuros[];
@@ -91,24 +94,40 @@ const AccomodationCard = ({
         )
     );
 
-    const diplayPricePerIntervalDate = useMemo(
-        () =>
-            pricelistInEuros.filter((item: PricelistInEuros) => {
-                const intervalStart = new Date(item.intervalStart);
-                const intervalEnd = new Date(item.intervalEnd);
-                const condition =
-                    intervalStart <= startDate && intervalEnd >= endDate;
-                return condition;
-            }),
-        [startDate, endDate]
-    );
+    const diplayPricePerIntervalDate1 = useMemo(() => {
+        let intervalDates: PricelistInEuros[] = [];
 
-    console.log('Example', diplayPricePerIntervalDate);
+        pricelistInEuros.forEach((item: PricelistInEuros) => {
+            const intervalStart = new Date(item.intervalStart);
+            const intervalEnd = new Date(item.intervalEnd);
+
+            if (
+                intervalStart <= startDate &&
+                intervalEnd >= endDate
+
+                // && item.intervalStart.includes(searchParams.get('endDate')!)
+            ) {
+                intervalDates.push(item);
+            }
+        });
+
+        if (intervalDates?.length > 1) {
+            intervalDates = intervalDates?.filter(
+                (intervalDate: PricelistInEuros) =>
+                    intervalDate.intervalStart.includes(
+                        searchParams.get('endDate')!
+                    )
+            );
+        }
+
+        return intervalDates;
+    }, [startDate, endDate]);
 
     const handleReservate = (
         pricePerNight: number,
         startDate: Date,
-        endDate: Date
+        endDate: Date,
+        title: string
     ) => {
         const reservationData = {
             startDate,
@@ -117,6 +136,7 @@ const AccomodationCard = ({
             totalPrice: formatCurrency(
                 calculatePricePerNight(pricePerNight, startDate, endDate)
             ),
+            title,
         };
         navigate('/accomodations/reservation-details', {
             state: reservationData,
@@ -210,11 +230,13 @@ const AccomodationCard = ({
                                     }
                                 />
                             </div>
-                            {diplayPricePerIntervalDate?.length === 0 ? (
+                            {diplayPricePerIntervalDate1?.length === 0 ? (
                                 <div>
                                     <p>
                                         {minPrice === maxPrice
-                                            ? formatCurrency(minPrice)
+                                            ? `${formatCurrency(
+                                                  1
+                                              )} - ${formatCurrency(minPrice)}`
                                             : `${formatCurrency(
                                                   minPrice
                                               )} - ${formatCurrency(maxPrice)}`}
@@ -222,7 +244,7 @@ const AccomodationCard = ({
                                 </div>
                             ) : null}
                             <div className="text-sm mt-4">
-                                {diplayPricePerIntervalDate?.length === 0 ? (
+                                {diplayPricePerIntervalDate1?.length === 0 ? (
                                     <div className="text-gray-400">
                                         <div className="w-[24px] h-[24px] rounded-[50%] border-slate-400 mr-1">
                                             <FontAwesomeIcon icon={faInfo} />
@@ -234,8 +256,9 @@ const AccomodationCard = ({
                                         </i>
                                     </div>
                                 ) : (
-                                    diplayPricePerIntervalDate.map(
+                                    diplayPricePerIntervalDate1.map(
                                         (item, index) => {
+                                            console.log('item', item);
                                             return (
                                                 <div
                                                     key={index}
@@ -256,7 +279,8 @@ const AccomodationCard = ({
                                                             handleReservate(
                                                                 item.pricePerNight,
                                                                 startDate,
-                                                                endDate
+                                                                endDate,
+                                                                title
                                                             )
                                                         }
                                                     >
@@ -274,7 +298,7 @@ const AccomodationCard = ({
                             className="text-base mt-10 text-blue-400 cursor-pointer inline-block"
                             onClick={() => setIsMoreOpen(!isMoreOpen)}
                         >
-                            {!isMoreOpen ? 'vise...' : 'manje'}
+                            {!isMoreOpen ? 'više...' : 'manje'}
                         </p>
                     </>
                 </div>

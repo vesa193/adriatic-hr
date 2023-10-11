@@ -57,7 +57,7 @@ const InputField = forwardRef(
                     />
                 </div>
                 {!!helperText ? (
-                    <p className="text-red-400">{helperText}</p>
+                    <p className="text-red-400 text-xs">{helperText}</p>
                 ) : null}
             </div>
         );

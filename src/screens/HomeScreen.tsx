@@ -2,6 +2,10 @@ import { FormEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import AccomodationCard, { IAccomodation } from '../features/AccomodationCard';
 import FilterAccomodation from '../features/FilterAccomodation';
+import {
+    filterPerAvailableDates,
+    filterPerMaxPricePerNight,
+} from '../utils/filterUtilFunctions';
 import useAccomodation from './hooks/useAccomodations';
 import { useForm } from './hooks/useForm';
 
@@ -14,9 +18,9 @@ export type IFormData = {
 
 const HomeScreen = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const { accommodations, isLoadingAccomodations } = useAccomodation();
+    const { accomodations, isLoadingAccomodations } = useAccomodation();
 
-    console.log('accommodations', accommodations);
+    console.log('accommodations', accomodations);
 
     const { fields, onChange, onReset } = useForm({
         startDate: !!searchParams.get('startDate')
@@ -61,37 +65,70 @@ const HomeScreen = () => {
         onReset();
     };
 
-    // const handleReservation = (reservateDate: IReservateDate) => {
-    //     console.log('reservateDate', reservateDate);
-    //     navigate({ search }, { state: reservateDate });
-    // };
+    const filteredAccomodations = accomodations?.filter(
+        (accomodation: IAccomodation) => {
+            if (
+                searchParams.get('startDate') &&
+                searchParams.get('endDate') &&
+                searchParams.get('capacity')! &&
+                searchParams.get('maxPricePerNight')!
+            ) {
+                return (
+                    filterPerAvailableDates(
+                        accomodation?.availableDates,
+                        searchParams.get('startDate')!,
+                        searchParams.get('endDate')!
+                    ) &&
+                    accomodation.capacity === +searchParams.get('capacity')! &&
+                    filterPerMaxPricePerNight(
+                        accomodation?.pricelistInEuros,
+                        searchParams.get('maxPricePerNight')!
+                    )
+                );
+            }
 
-    // const filterAccomodations = accommodations?.filter(
-    //     (accomodation: IAccomodation) => {
-    //         return accomodation.capacity === +searchParams.get('capacity')!
-    //             ? true
-    //             : false;
-    //     }
-    // );
+            if (
+                searchParams.get('startDate') &&
+                searchParams.get('endDate') &&
+                searchParams.get('maxPricePerNight')!
+            ) {
+                return (
+                    filterPerAvailableDates(
+                        accomodation?.availableDates,
+                        searchParams.get('startDate')!,
+                        searchParams.get('endDate')!
+                    ) &&
+                    filterPerMaxPricePerNight(
+                        accomodation?.pricelistInEuros,
+                        searchParams.get('maxPricePerNight')!
+                    )
+                );
+            }
 
-    const filterPriceListInEuros = accommodations.map(
-        (element: IAccomodation) => {
-            return {
-                ...element,
-                pricelistInEuros: element.pricelistInEuros.filter(
-                    (priceitemInEuros) =>
-                        priceitemInEuros.pricePerNight ===
-                        +searchParams.get('maxPricePerNight')!
-                ),
-            };
+            if (
+                searchParams.get('startDate') &&
+                searchParams.get('endDate') &&
+                searchParams.get('capacity')!
+            ) {
+                return (
+                    filterPerAvailableDates(
+                        accomodation?.availableDates,
+                        searchParams.get('startDate')!,
+                        searchParams.get('endDate')!
+                    ) &&
+                    accomodation.capacity === +searchParams.get('capacity')!
+                );
+            }
+
+            if (searchParams.get('startDate') && searchParams.get('endDate')) {
+                return filterPerAvailableDates(
+                    accomodation?.availableDates,
+                    searchParams.get('startDate')!,
+                    searchParams.get('endDate')!
+                );
+            }
         }
     );
-
-    const elements = filterPriceListInEuros?.filter(
-        (item: IAccomodation) => !!item.pricelistInEuros.length
-    );
-
-    console.log('elements', elements);
 
     return (
         <>
@@ -102,8 +139,25 @@ const HomeScreen = () => {
                 onChange={onChange}
             />
             <main className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-4 p-4 place-items-center items-stretch">
-                {!!elements?.length
-                    ? elements?.map((accomodation: IAccomodation) => {
+                {filteredAccomodations?.length > 0
+                    ? filteredAccomodations?.map(
+                          (filteredAccomodation: IAccomodation) => {
+                              return (
+                                  <AccomodationCard
+                                      key={filteredAccomodation?.id}
+                                      {...filteredAccomodation}
+                                  />
+                              );
+                          }
+                      )
+                    : null}
+
+                {searchParams.size && filteredAccomodations.length === 0 ? (
+                    <p>Nema dostupnih smestaja za ovaj period.</p>
+                ) : null}
+
+                {!searchParams.size && accomodations?.length > 0
+                    ? accomodations?.map((accomodation: IAccomodation) => {
                           return (
                               <AccomodationCard
                                   key={accomodation?.id}
@@ -111,15 +165,7 @@ const HomeScreen = () => {
                               />
                           );
                       })
-                    : !!accommodations?.length &&
-                      accommodations?.map((accomodation: IAccomodation) => {
-                          return (
-                              <AccomodationCard
-                                  key={accomodation?.id}
-                                  {...accomodation}
-                              />
-                          );
-                      })}
+                    : null}
             </main>
         </>
     );

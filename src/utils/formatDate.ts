@@ -21,3 +21,16 @@ export const formatDate = (dateValue: string) => {
 
     return `${month} ${day}, ${year}`;
 };
+
+export const compareTwoDates = (startDate: Date, endDate: Date) => {
+    // set hours, minutes, seconds, and milliseconds zero in the timestamp
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(0, 0, 0, 0);
+
+    // compare timestamp
+    if (endDate >= startDate) {
+        return true;
+    }
+
+    return false;
+};
